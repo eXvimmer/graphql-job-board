@@ -1,6 +1,8 @@
+const db = require("./db");
+
 const Query = {
-  greeting() {
-    return "Hello, world!";
+  jobs() {
+    return db.jobs.list();
   },
 };
 
