@@ -18,4 +18,10 @@ const Job = {
   },
 };
 
-module.exports = { Query, Job };
+const Company = {
+  jobs(company) {
+    return db.jobs.list().filter((j) => j.companyId === company.id);
+  },
+};
+
+module.exports = { Query, Job, Company };
