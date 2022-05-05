@@ -6,4 +6,10 @@ const Query = {
   },
 };
 
-module.exports = { Query };
+const Job = {
+  company(job) {
+    return db.companies.get(job.companyId);
+  },
+};
+
+module.exports = { Query, Job };
