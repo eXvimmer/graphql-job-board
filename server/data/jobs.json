@@ -22,5 +22,17 @@
     "companyId": "HJRa-DOuG",
     "title": "C++ Developer",
     "description": "We need a junior C++ developer with 70 years of experience."
+  },
+  {
+    "id": "Hk6i8MB85",
+    "title": "Tester",
+    "description": "some tester job for you",
+    "companyId": "HJRa-DOuG"
+  },
+  {
+    "id": "r1RmtzrU9",
+    "title": "Go developer",
+    "description": "Go is cool",
+    "companyId": "HJRa-DOuG"
   }
 ]

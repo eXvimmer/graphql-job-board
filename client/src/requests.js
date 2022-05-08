@@ -9,7 +9,7 @@ async function graphqlRequest(query, variables = {}) {
   };
 
   if (isLoggedIn()) {
-    request["authorization"] = "Bearer " + getAccessToken();
+    request.headers["authorization"] = "Bearer " + getAccessToken();
   }
 
   const response = await fetch(endpointURL, request);

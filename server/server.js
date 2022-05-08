@@ -25,7 +25,7 @@ const resolvers = require("./resolvers");
 
 let apolloServer = null;
 const context = ({ req }) => ({
-  user: req.user,
+  user: req.user && db.users.get(req.user.sub),
 });
 
 async function startServer() {
