@@ -13,7 +13,9 @@ const Query = {
 };
 
 const Mutation = {
-  createJob(_, { input }) {
+  createJob(_, { input }, { user }) {
+    if (!user) throw new Error("unauthorized");
+
     const id = db.jobs.create(input);
     return db.jobs.get(id);
   },

@@ -24,9 +24,12 @@ const typeDefs = gql(fs.readFileSync("./schema.graphql", { encoding: "utf8" }));
 const resolvers = require("./resolvers");
 
 let apolloServer = null;
+const context = ({ req }) => ({
+  user: req.user,
+});
 
 async function startServer() {
-  apolloServer = new ApolloServer({ typeDefs, resolvers });
+  apolloServer = new ApolloServer({ typeDefs, resolvers, context });
 
   await apolloServer.start();
   apolloServer.applyMiddleware({ app, path: "/graphql" });
