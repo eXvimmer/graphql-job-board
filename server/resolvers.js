@@ -12,6 +12,12 @@ const Query = {
   },
 };
 
+const Mutation = {
+  createJob(_, { companyId, title, description }) {
+    return db.jobs.create({ companyId, title, description });
+  },
+};
+
 const Job = {
   company(job) {
     return db.companies.get(job.companyId);
@@ -24,4 +30,4 @@ const Company = {
   },
 };
 
-module.exports = { Query, Job, Company };
+module.exports = { Query, Mutation, Job, Company };
