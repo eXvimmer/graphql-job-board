@@ -1,6 +1,15 @@
+import { ApolloClient, HttpLink, InMemoryCache } from "apollo-boost";
+import gql from "graphql-tag";
 import { isLoggedIn, getAccessToken } from "./auth";
+
 const endpointURL = `http://localhost:9000/graphql`;
 
+const client = new ApolloClient({
+  link: new HttpLink({ uri: endpointURL }),
+  cache: new InMemoryCache(),
+});
+
+// TODO: remove this function
 async function graphqlRequest(query, variables = {}) {
   const request = {
     method: "POST",
@@ -23,7 +32,7 @@ async function graphqlRequest(query, variables = {}) {
 }
 
 export async function loadJobs() {
-  const query = `
+  const query = gql`
     {
       jobs {
         id
@@ -35,12 +44,15 @@ export async function loadJobs() {
       }
     }
   `;
-  const { jobs } = await graphqlRequest(query);
+
+  const {
+    data: { jobs },
+  } = await client.query({ query });
   return jobs;
 }
 
 export async function loadJob(id) {
-  const query = `
+  const query = gql`
     query singleJob($id: ID!) {
       job(id: $id) {
         id
@@ -54,12 +66,14 @@ export async function loadJob(id) {
     }
   `;
 
-  const { job } = await graphqlRequest(query, { id });
+  const {
+    data: { job },
+  } = await client.query({ query, variables: { id } });
   return job;
 }
 
 export async function loadCompany(id) {
-  const query = `
+  const query = gql`
     query getCompany($id: ID!) {
       company(id: $id) {
         id
@@ -68,17 +82,20 @@ export async function loadCompany(id) {
         jobs {
           id
           title
-          description
         }
       }
     }
   `;
 
-  return await graphqlRequest(query, { id });
+  const {
+    data: { company },
+  } = await client.query({ query, variables: { id } });
+
+  return company;
 }
 
 export async function createJob(input) {
-  const mutation = `
+  const mutation = gql`
     mutation createJob($input: createJobInput) {
       job: createJob(input: $input) {
         id
@@ -91,6 +108,9 @@ export async function createJob(input) {
     }
   `;
 
-  const { job } = await graphqlRequest(mutation, { input });
+  // FIXME: add the bearer token to the request
+  const {
+    data: { job },
+  } = await client.mutate({ mutation, variables: { input } });
   return job;
 }

@@ -11,7 +11,7 @@ export class CompanyDetail extends Component {
   async componentDidMount() {
     const { companyId } = this.props.match.params;
     const company = await loadCompany(companyId);
-    this.setState(company);
+    this.setState({ company });
   }
 
   render() {
