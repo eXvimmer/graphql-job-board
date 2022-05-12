@@ -41,7 +41,7 @@ export async function loadJobs() {
 
   const {
     data: { jobs },
-  } = await client.query({ query });
+  } = await client.query({ query, fetchPolicy: "no-cache" });
   return jobs;
 }
 
@@ -102,7 +102,6 @@ export async function createJob(input) {
     }
   `;
 
-  // FIXME: add the bearer token to the request
   const {
     data: { job },
   } = await client.mutate({ mutation, variables: { input } });
