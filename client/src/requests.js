@@ -25,25 +25,46 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export async function loadJobs() {
-  const query = gql`
-    {
+const createJobMutation = gql`
+  mutation createJob($input: createJobInput) {
+    job: createJob(input: $input) {
+      id
+      title
+      description
+      company {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const getCompanyQuery = gql`
+  query getCompany($id: ID!) {
+    company(id: $id) {
+      id
+      name
+      description
       jobs {
         id
         title
-        company {
-          id
-          name
-        }
       }
     }
-  `;
+  }
+`;
 
-  const {
-    data: { jobs },
-  } = await client.query({ query, fetchPolicy: "no-cache" });
-  return jobs;
-}
+const jobsQuery = gql`
+  query jobsQuery {
+    jobs {
+      id
+      title
+      company {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const jobQuery = gql`
   query jobQuery($id: ID!) {
@@ -59,6 +80,13 @@ const jobQuery = gql`
   }
 `;
 
+export async function loadJobs() {
+  const {
+    data: { jobs },
+  } = await client.query({ query: jobsQuery, fetchPolicy: "no-cache" });
+  return jobs;
+}
+
 export async function loadJob(id) {
   const {
     data: { job },
@@ -67,46 +95,18 @@ export async function loadJob(id) {
 }
 
 export async function loadCompany(id) {
-  const query = gql`
-    query getCompany($id: ID!) {
-      company(id: $id) {
-        id
-        name
-        description
-        jobs {
-          id
-          title
-        }
-      }
-    }
-  `;
-
   const {
     data: { company },
-  } = await client.query({ query, variables: { id } });
+  } = await client.query({ query: getCompanyQuery, variables: { id } });
 
   return company;
 }
 
 export async function createJob(input) {
-  const mutation = gql`
-    mutation createJob($input: createJobInput) {
-      job: createJob(input: $input) {
-        id
-        title
-        description
-        company {
-          id
-          name
-        }
-      }
-    }
-  `;
-
   const {
     data: { job },
   } = await client.mutate({
-    mutation,
+    mutation: createJobMutation,
     variables: { input },
     update: (cache, { data }) => {
       cache.writeData({
